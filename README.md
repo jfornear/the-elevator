@@ -98,31 +98,71 @@ The system simulates a modern office building's elevator system with:
 ### 5. Visualization
 The system provides a real-time ASCII visualization:
 ```
-========================================
-         Elevator System - 14:30
-========================================
+================================================================================
+                           Elevator System - 19:47:15
+================================================================================
 Elevator Status:
-#1: Floor 15 ↑ [Moving]    Zone: Low-Rise
-#2: Floor 8  ↓ [Idle]     Zone: Low-Rise
-#3: Floor 25 ↑ [Moving]    Zone: Mid-Rise
-#4: Floor 1  - [Door Open] Zone: Mid-Rise
-#5: Floor 30 ↓ [Moving]    Zone: High-Rise
-#6: Floor 40 ↑ [Moving]    Zone: High-Rise
-
-50 |                  [E6]
-49 |                   *
-48 |
-...
-30 |                  [E5]
-...
-25 |         [E3]
-...
-15 |   [E1]
-...
-08 |      [E2]
-...
-01 |            [E4]
-========================================
+#1: Floor 1, Direction: idle, State: idle, Weight: 0lbs, Targets: []
+#2: Floor 1, Direction: idle, State: idle, Weight: 0lbs, Targets: []
+#3: Floor 1, Direction: idle, State: idle, Weight: 0lbs, Targets: []
+#4: Floor 1, Direction: idle, State: idle, Weight: 0lbs, Targets: []
+#5: Floor 32, Direction: up, State: moving, Weight: 0lbs, Targets: [42]
+#6: Floor 21, Direction: up, State: moving, Weight: 0lbs, Targets: [43]
+--------------------------------------------------------------------------------
+50 |                                                                          
+49 |                                                                          
+48 |                                                                          
+47 |                                                                          
+46 |                                                                          
+45 |                                                                          
+44 |                                                                          
+43 |                                             *                            
+42 |                                     *                                    
+41 |                                                                          
+40 |                                                                          
+39 |                                                                          
+38 |                                                                          
+37 |                                                                          
+36 |                                                                          
+35 |                                                                          
+34 |                                                                          
+33 |                                                                          
+32 |                                  [E5||||]                               ↑
+31 |                                                                          
+30 |                                                                          
+29 |                                                                          
+28 |                                                                          
+27 |                                                                          
+26 |                                                                          
+25 |                                                                          
+24 |                                                                          
+23 |                                                                          
+22 |                                                                          
+21 |                                          [E6||||]                       ↑
+20 |                                                                          
+19 |                                                                          
+18 |                                                                          
+17 |                                                                          
+16 |                                                                          
+15 |                                                                          
+14 |                                                                          
+13 |                                                                          
+12 |                                                                          
+11 |                                                                          
+10 |                                                                          
+ 9 |                                                                          
+ 8 |                                                                          
+ 7 |                                                                          
+ 6 |                                                                          
+ 5 |                                                                          
+ 4 |                                                                          
+ 3 |                                                                          
+ 2 |                                                                          
+ 1 |  [E1||||] [E2||||] [E3||||] [E4||||]                                     
+================================================================================
+Legend:
+[ || ] - Open doors   [||||] - Closed doors   * - Target floor   [!!!!] - Emergency
+↑/↓ - Moving up/down   E# - Elevator number
 ```
 
 ## Development
@@ -165,24 +205,4 @@ The system simulates typical office building traffic patterns:
 - Lunch rush (11:00-14:00): Mixed traffic
 - Evening rush (16:00-18:00): Down traffic
 - Regular hours: Distributed traffic
-
-## Future Improvements
-
-### Priority Enhancements
-- **Configurable Building Setup**
-  - Adjustable number of elevators and floors
-  - Customizable zone assignments
-  - Basic speed and capacity settings
-
-- **Core Safety Features**
-  - Emergency stop improvements
-  - Door safety enhancements
-  - Weight limit monitoring
-
-- **Basic Traffic Optimization**
-  - Peak time handling
-  - Improved request grouping
-  - Energy efficiency mode
-
-These represent the highest-priority improvements that would enhance the system's flexibility, safety, and efficiency.
 
