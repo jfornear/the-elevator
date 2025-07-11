@@ -188,14 +188,18 @@ class ElevatorSystem:
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         log_file = f'logs/elevator_system_{timestamp}.log'
         
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s [%(levelname)s] %(message)s',
-            handlers=[
-                logging.FileHandler(log_file)  # Only write to file, not console
-            ]
-        )
+        # Create file handler with immediate flush
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+        
+        # Configure logger
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
+        self.logger.addHandler(file_handler)
+        
+        # Force immediate flush
+        file_handler.flush()
+        
         self.logger.info("=== Starting New Elevator System Session ===")
         self.logger.info(f"Initializing system with {self.num_floors} floors and {len(self.elevators)} elevators")
 
@@ -340,6 +344,7 @@ class ElevatorSystem:
         return success
 
     def update(self):
+        """Update all elevators in the system."""
         for elevator in self.elevators:
             old_state = elevator.state
             old_floor = elevator.current_floor
@@ -349,24 +354,11 @@ class ElevatorSystem:
             
             # Log state changes
             if elevator.state != old_state:
-                if elevator.state == ElevatorState.DOOR_OPENING:
-                    # Only log door opening if we're actually serving a request
-                    if elevator.current_floor in elevator.targets:
-                        self.logger.info(f"STATE: E{elevator.id} at F{elevator.current_floor} changed {old_state.value}→{elevator.state.value}\n       Direction: {elevator.direction.value}")
-                        self.logger.info(f"STOP: E{elevator.id} at F{elevator.current_floor} ({elevator.direction.value})\n      Reason: Serving request\n      Targets: {elevator.targets}")
-                elif elevator.state == ElevatorState.DOOR_OPEN:
-                    # Only log door open if we're actually serving a request
-                    if elevator.current_floor in elevator.targets:
-                        self.logger.info(f"STATE: E{elevator.id} at F{elevator.current_floor} changed {old_state.value}→{elevator.state.value}\n       Direction: {elevator.direction.value}")
-                        self.logger.info(f"DOORS: E{elevator.id} F{elevator.current_floor} - Doors fully open\n       Targets: {elevator.targets}")
-                elif elevator.state == ElevatorState.DOOR_CLOSING:
-                    # Only log door closing if we were serving a request
-                    if elevator.current_floor in elevator.targets:
-                        self.logger.info(f"STATE: E{elevator.id} at F{elevator.current_floor} changed {old_state.value}→{elevator.state.value}\n       Direction: {elevator.direction.value}")
-                        self.logger.info(f"DOORS: E{elevator.id} F{elevator.current_floor} - Starting to close doors\n       Targets: {elevator.targets}")
-                        self.logger.info(f"COMPLETED: E{elevator.id} F{elevator.current_floor} {elevator.direction.value} request\n          Remaining targets: {[t for t in elevator.targets if t != elevator.current_floor]}")
-                else:
-                    self.logger.info(f"STATE: E{elevator.id} at F{elevator.current_floor} changed {old_state.value}→{elevator.state.value}\n       Direction: {elevator.direction.value}")
+                self.logger.info(f"E{elevator.id} state change: {old_state.value} -> {elevator.state.value}")
+            if elevator.current_floor != old_floor:
+                self.logger.info(f"E{elevator.id} floor change: {old_floor} -> {elevator.current_floor}")
+            if elevator.direction != old_direction:
+                self.logger.info(f"E{elevator.id} direction change: {old_direction.value} -> {elevator.direction.value}")
             
             # Log direction changes
             if elevator.direction != old_direction:

@@ -165,6 +165,81 @@ Legend:
 ↑/↓ - Moving up/down   E# - Elevator number
 ```
 
+### 6. Command Line Interface (CLI)
+The system includes a powerful CLI tool for interacting with the elevator system:
+
+```bash
+# Get system status (all elevators)
+python src/cli.py status
+
+# Get specific elevator status
+python src/cli.py elevator-status 1
+
+# Request elevator from inside (internal request)
+python src/cli.py request-elevator 1 5  # Request elevator 1 to go to floor 5
+
+# Request elevator from floor (external request)
+python src/cli.py call-elevator 3 up  # Call elevator to floor 3, going up
+
+# Get system statistics
+python src/cli.py stats
+
+# Monitor system status in real-time (updates every second)
+python src/cli.py monitor
+
+# Trigger emergency mode
+python src/cli.py emergency
+
+# Resume normal operation
+python src/cli.py resume
+```
+
+**CLI Options:**
+- `--api-url`: Specify custom API URL (default: http://localhost:8080)
+- `--help`: Show help message and available commands
+- `monitor --interval`: Set custom update interval for monitoring (default: 1 second)
+
+### 7. Logging System
+The system maintains detailed logs of all elevator operations:
+
+**Log Location:**
+- Logs are stored in the `logs/` directory
+- Each session creates a new log file: `elevator_system_YYYYMMDD_HHMMSS.log`
+
+**What's Logged:**
+1. System Events:
+   - System initialization
+   - Elevator initialization with zones
+   - API requests (except status polling)
+   
+2. Elevator State Changes:
+   - Movement between floors
+   - Direction changes (up/down/idle)
+   - Door operations (opening/closing)
+   - State transitions
+   - Emergency events
+
+**Monitoring Logs:**
+```bash
+# View latest log file
+cat logs/elevator_system_*.log | tail -n 1
+
+# Monitor logs in real-time
+tail -f logs/elevator_system_*.log
+
+# Search logs for specific elevator
+grep "E1" logs/elevator_system_*.log
+```
+
+**Log Format:**
+```
+2025-07-09 19:40:16,008 [INFO] === Starting New Elevator System Session ===
+2025-07-09 19:40:16,008 [INFO] Initialized E1 - Zone: low_rise, Floors: (1, 20)
+2025-07-09 19:40:16,008 [INFO] E1 state change: idle -> moving
+2025-07-09 19:40:16,008 [INFO] E1 floor change: 1 -> 2
+2025-07-09 19:40:16,008 [INFO] E1 direction change: idle -> up
+```
+
 ## Development
 
 ### Project Structure
