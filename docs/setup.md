@@ -1,18 +1,19 @@
 # Local Setup Guide
 
-This guide explains how to set up and run the elevator system on your local machine.
+This guide explains how to set up and run the elevator system simulator on your local machine.
 
 ## Prerequisites
 
 - Python 3.8 or higher
 - pip (Python package installer)
 - Git
+- Terminal with ASCII support for visualization
 
 ## Installation Steps
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/your-username/the-elevator.git
+   git clone https://github.com/jfornear/the-elevator.git
    cd the-elevator
    ```
 
@@ -34,8 +35,6 @@ This guide explains how to set up and run the elevator system on your local mach
 
 ## Running the System
 
-There are several ways to run the elevator system:
-
 ### 1. Run Full Demo (Recommended)
 This will start both the API server and the visualization:
 ```bash
@@ -44,7 +43,7 @@ python run_demo.py
 
 The demo will:
 - Start the API server (automatically finds an available port)
-- Launch the visualization interface
+- Launch the ASCII visualization interface
 - Show real-time elevator movements
 - Handle keyboard interrupts gracefully
 
@@ -59,8 +58,35 @@ This will:
 - Provide access to the API endpoints
 - Make Swagger documentation available at `http://localhost:8080/docs`
 
-### 3. Run Tests
-To run the test suite:
+### 3. Use Command Line Interface
+The system includes a CLI for direct interaction:
+```bash
+# Get system status
+python src/cli.py status
+
+# Get specific elevator status
+python src/cli.py elevator-status 1
+
+# Request elevator from inside
+python src/cli.py request-elevator 1 5  # Elevator 1 to floor 5
+
+# Call elevator from floor
+python src/cli.py call-elevator 3 up  # Call to floor 3, going up
+
+# Monitor system in real-time
+python src/cli.py monitor
+
+# Emergency controls
+python src/cli.py emergency  # Stop all elevators
+python src/cli.py resume    # Resume operation
+```
+
+CLI Options:
+- `--api-url`: Custom API URL (default: http://localhost:8080)
+- `--help`: Show help message
+- `monitor --interval`: Update interval (default: 1 second)
+
+### 4. Run Tests
 ```bash
 # Run all tests
 pytest
@@ -72,102 +98,105 @@ pytest tests/test_elevator.py
 pytest -v
 ```
 
+## System Configuration
+
+Current system settings:
+- 6 elevators in 3 zones:
+  - Low-rise (E1, E2): Floors 1-20
+  - Mid-rise (E3, E4): Floors 21-35
+  - High-rise (E5, E6): Floors 36-50
+- Door timing:
+  - Opening: 2 cycles
+  - Open: 3 cycles
+  - Closing: 2 cycles
+- Weight limit: 2200 lbs per elevator
+- API cache TTL: 100ms
+
 ## API Endpoints
 
-Once running, the following endpoints are available:
+Core endpoints available at `http://localhost:8080`:
 
-- `GET /system/status` - Get status of all elevators
-- `GET /elevator/{id}/status` - Get specific elevator status
-- `POST /elevator/{id}/request` - Send internal request
-- `POST /floor/{number}/request` - Send external request
-- `POST /system/emergency` - Trigger emergency mode
+- `GET /system/status` - Get all elevator status
+- `GET /elevator/{id}/status` - Get specific elevator
+- `POST /elevator/{id}/request` - Internal request
+- `POST /floor/{number}/request` - External request
+- `POST /system/emergency` - Emergency stop
+- `POST /system/resume` - Resume operation
 
-Visit `http://localhost:8080/docs` for interactive API documentation.
-
-## Directory Structure
-
-```
-the-elevator/
-├── src/                 # Source code
-│   ├── api.py          # API implementation
-│   ├── elevator.py     # Elevator logic
-│   ├── system.py       # System coordination
-│   └── visualizer.py   # ASCII visualization
-├── tests/              # Test files
-├── docs/               # Documentation
-├── logs/               # System logs
-├── run_api.py         # API server runner
-└── run_demo.py        # Demo runner
-```
-
-## Configuration
-
-The system comes with default settings:
-- 6 elevators
-- 50 floors
-- 3 zones (Low/Mid/High-rise)
-- Door timing controls
-- Weight limits (2200 lbs per elevator)
+Visit `/docs` for interactive Swagger documentation.
 
 ## Logging
 
-- Logs are stored in the `logs/` directory
-- New log file created for each session
-- Logs include:
+System logs are stored in `logs/`:
+- Format: `elevator_system_YYYYMMDD_HHMMSS.log`
+- Contains:
   - System initialization
   - Elevator movements
   - Request handling
   - State changes
   - Errors
 
+Monitor logs:
+```bash
+# View latest
+tail -n 50 logs/elevator_system_*.log
+
+# Monitor real-time
+tail -f logs/elevator_system_*.log
+
+# Search for specific elevator
+grep "E1" logs/elevator_system_*.log
+```
+
 ## Troubleshooting
 
-1. **Port Already in Use**
+1. **Port Conflicts**
    ```bash
-   # Check if another instance is running
+   # Check running instances
    ps aux | grep run_api.py
-   # Kill the process if needed
+   # Kill if needed
    kill <process_id>
    ```
 
 2. **Visualization Issues**
-   - Ensure terminal window is large enough
+   - Ensure terminal is 80+ columns wide
    - Try resizing terminal
-   - Check if your terminal supports ASCII graphics
+   - Check ASCII support
 
 3. **API Connection Failed**
-   - Verify the port number in `.elevator_port`
-   - Check if API server is running
-   - Ensure no firewall blocking local connections
+   - Check `.elevator_port` file
+   - Verify API server is running
+   - Try different port with `--api-url`
 
-## Development Setup
+4. **Common Issues**
+   - "Port in use": Stop other instances
+   - "No visualization": Resize terminal
+   - "Connection refused": Check API server
+   - "Import error": Verify venv activation
 
-For development work:
+## Development
 
-1. **Install Development Dependencies**
-   ```bash
-   pip install -r requirements.txt
+1. **Project Structure**
+   ```
+   the-elevator/
+   ├── src/                 # Source code
+   │   ├── api.py          # API implementation
+   │   ├── elevator.py     # Core logic
+   │   ├── system.py       # Coordination
+   │   └── visualizer.py   # ASCII display
+   ├── tests/              # Test files
+   ├── docs/               # Documentation
+   └── logs/               # System logs
    ```
 
-2. **Run Tests During Development**
-   ```bash
-   # Run tests with coverage
-   pytest --cov=src
-
-   # Run tests in watch mode
-   pytest-watch
-   ```
-
-3. **Code Style**
-   - Follow PEP 8 guidelines
+2. **Code Style**
+   - Follow PEP 8
    - Use type hints
-   - Keep functions focused and small
-   - Add docstrings for public interfaces
+   - Add docstrings
+   - Keep functions focused
 
-## Support
-
-If you encounter any issues:
-1. Check the logs in `logs/` directory
-2. Ensure all dependencies are installed
-3. Verify Python version compatibility
-4. Check for port conflicts 
+3. **Testing**
+   - Write unit tests
+   - Add integration tests
+   - Test zone behavior
+   - Verify safety features 
