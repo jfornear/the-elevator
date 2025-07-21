@@ -165,6 +165,8 @@ Legend:
 ↑/↓ - Moving up/down   E# - Elevator number
 ```
 
+https://github.com/user-attachments/assets/0ca6b33a-c6f0-4d4a-9fa3-2774348a5309
+
 ### 6. Command Line Interface (CLI)
 The system includes a powerful CLI tool for interacting with the elevator system:
 
