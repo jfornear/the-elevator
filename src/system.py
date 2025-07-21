@@ -1,6 +1,5 @@
-from typing import List, Dict, Optional
+from typing import Dict
 from queue import PriorityQueue
-import time
 
 from .elevator import Elevator, ElevatorState, ZoneType
 from .floor import Floor

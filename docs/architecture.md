@@ -163,31 +163,33 @@ graph TD
 ## API Structure
 
 ```mermaid
-graph LR
-    subgraph API Endpoints
-        GET_STATUS[/system/status]
-        GET_ELEVATOR[/elevator/{id}/status]
-        POST_ELEVATOR[/elevator/{id}/request]
-        POST_FLOOR[/floor/{number}/request]
-        POST_EMERGENCY[/system/emergency]
-        RESUME[/system/resume]
+flowchart LR
+    subgraph Endpoints[API Endpoints]
+        direction TB
+        status["/system/status"]
+        elevator["/elevator/{id}/status"]
+        elevator_req["/elevator/{id}/request"]
+        floor["/floor/{number}/request"]
+        emergency["/system/emergency"]
+        resume["/system/resume"]
     end
     
-    subgraph System Components
-        SYSTEM[ElevatorSystem]
-        CACHE[Status Cache<br>TTL: 100ms]
-        LOGGER[ElevatorLogger]
+    subgraph Components[System Components]
+        direction TB
+        system[ElevatorSystem]
+        cache["Status Cache\nTTL: 100ms"]
+        logger[ElevatorLogger]
     end
     
-    GET_STATUS --> CACHE
-    CACHE --> SYSTEM
-    GET_ELEVATOR --> SYSTEM
-    POST_ELEVATOR --> SYSTEM
-    POST_FLOOR --> SYSTEM
-    POST_EMERGENCY --> SYSTEM
-    RESUME --> SYSTEM
+    status --> cache
+    cache --> system
+    elevator --> system
+    elevator_req --> system
+    floor --> system
+    emergency --> system
+    resume --> system
     
-    SYSTEM --> LOGGER
+    system --> logger
 ```
 
 ## Key Components
